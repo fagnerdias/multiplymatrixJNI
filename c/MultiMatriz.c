@@ -4,13 +4,17 @@
 
 JNIEXPORT jobjectArray JNICALL Java_MultiMatriz_multiMatrizNativo(JNIEnv *env, jobject jobj, jobjectArray jobjArrayM1, jobjectArray jobjArrayM2){
     
+    
+    //Declaração de Variáveis
     jsize qtd_linhas_m1 = (*env)->GetArrayLength(env, jobjArrayM1);
     jsize qtd_linhas_m2 = (*env)->GetArrayLength(env, jobjArrayM2);
     
+    //M1
     jintArray array_m1;
     jsize qtd_colunas_m1;
     jint *data_m1;
 
+    //M2
     jintArray array_m2;
     jsize qtd_colunas_m2;
     jint *data_m2;
@@ -18,6 +22,7 @@ JNIEXPORT jobjectArray JNICALL Java_MultiMatriz_multiMatrizNativo(JNIEnv *env, j
     jint** m1 = (jint**)calloc(qtd_linhas_m1, sizeof(jint*));
     jint** m2 = (jint**)calloc(qtd_linhas_m1, sizeof(jint*));
 
+    //Formação da Matriz M1
     for(int i = 0; i < qtd_linhas_m1; i++){
         array_m1 = (*env)->GetObjectArrayElement(env, jobjArrayM1, i);
         qtd_colunas_m1 = (*env)->GetArrayLength(env, array_m1);
@@ -25,6 +30,8 @@ JNIEXPORT jobjectArray JNICALL Java_MultiMatriz_multiMatrizNativo(JNIEnv *env, j
 
         //(*env)->ReleaseIntArrayElements(env, array_m1, jobjArrayM1, 0);
     }
+
+    //Formação da Matriz M2
     for(int i = 0; i < qtd_linhas_m2; i++){
         array_m2 = (*env)->GetObjectArrayElement(env, jobjArrayM2, i);
         qtd_colunas_m2 = (*env)->GetArrayLength(env, array_m2);
@@ -33,10 +40,13 @@ JNIEXPORT jobjectArray JNICALL Java_MultiMatriz_multiMatrizNativo(JNIEnv *env, j
         //(*env)->ReleaseIntArrayElements(env, array_m2, jobjArrayM2, 0);
     }
 
+    //Alocação de Memória para Matriz Resultado
     jint **matrizResult = (jint**)calloc(qtd_linhas_m1,sizeof(jint*));
     for(int i = 0; i < qtd_linhas_m1; i++){
         matrizResult[i] = (jint*)calloc(qtd_colunas_m2,sizeof(jint));
     }
+
+    //Impressão de Matriz M1
     jint aux = 0;
     printf("===== Multiplicação em C =====\n");
     printf("========= M1 ============\n");
@@ -46,6 +56,8 @@ JNIEXPORT jobjectArray JNICALL Java_MultiMatriz_multiMatrizNativo(JNIEnv *env, j
         }
         printf("\n");
     }
+
+    //Impressão de Matriz M2
     printf("========= M2 ============\n");
     for(int i = 0; i < qtd_linhas_m2; i++){
         for(int j = 0; j < qtd_colunas_m2; j++){
@@ -53,37 +65,32 @@ JNIEXPORT jobjectArray JNICALL Java_MultiMatriz_multiMatrizNativo(JNIEnv *env, j
         }
         printf("\n");
     }
-    
+
+    //Produto de Matriz M1 e M2
     for(int i = 0; i < qtd_linhas_m1; i++){
         for(int j = 0; j < qtd_colunas_m2; j++){
             for(int x = 0; x < qtd_colunas_m1; x ++){                
-                printf("m1: %d m2: %d\n",m1[i][x], m2[x][j]);
+                //printf("m1: %d m2: %d\n",m1[i][x], m2[x][j]);
                 aux += m1[i][x] * m2[x][j];
             }
-            printf("aux: %d\n", aux);
+            //printf("aux: %d\n", aux);
             matrizResult[i][j] = aux;
             aux = 0;
-            printf("matrizResult: %d\n",matrizResult[i][j]);
+            //printf("matrizResult: %d\n",matrizResult[i][j]);
         }
     }
     
-    printf("========= Matriz produto ============\n");
-    for(int i = 0; i < qtd_linhas_m1; i++){
-        for(int j = 0; j < qtd_colunas_m2; j++){
-            printf("%d ",matrizResult[i][j]);
-        }
-        printf("\n");
+    //Retornando Matriz -- Conversão Inteiro para Objeto_Array
+    jclass AUX1 = (*env)->FindClass(env, "[I");
+    jintArray AUX2 = (*env)->NewIntArray(env, qtd_linhas_m1);
+    jobjectArray result = (*env)->NewObjectArray(env, qtd_linhas_m1, AUX1, AUX2);
+
+    for(int i = 0 ; i < qtd_linhas_m1 ; i++){
+        jintArray AUX3 = (*env)->NewIntArray(env, qtd_linhas_m1);
+        (*env)->SetIntArrayRegion(env, AUX3, 0, qtd_linhas_m1, matrizResult[i]);
+        (*env)->SetObjectArrayElement(env, result, i, AUX3);
+        (*env)->DeleteLocalRef(env, AUX3);
     }
 
-    /*for(int i = 0; i < qtd_linhas_m1; i++){
-        free(m1[i]);
-    }
-    free(m1);    
-    for(int i = 0; i < qtd_linhas_m2; i++){
-        free(m2[i]);
-    }
-    free(m2); */
-       
-    return matrizResult;
-
+    return result;
 }

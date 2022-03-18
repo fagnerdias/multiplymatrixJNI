@@ -24,7 +24,7 @@ public class MultiMatriz{
         
         for(int i = 0; i < qtd_linhas_m1; i++){
             for(int j = 0; j < qtd_colunas_m2; j++){
-                for(int x = 0; x < qtd_linhas_m2; x ++){
+                for(int x = 0; x < qtd_linhas_m2; x++){
                     aux += m1[i][x] * m2[x][j];
                 }
                 matrizResult[i][j] = aux;
@@ -36,7 +36,7 @@ public class MultiMatriz{
     }
 
     public static void exibiMatriz(int[][] matriz){              
-        System.out.println("Dimensoes da matriz: "+matriz.length+"X"+matriz[0].length);
+        System.out.println("Dimensões da Matriz: "+matriz.length+"X"+matriz[0].length);
         System.out.println("========================");
         
         for(int i = 0; i < matriz.length; i++){
@@ -55,11 +55,13 @@ public class MultiMatriz{
         int[][] m2 = {{5, 10, 15, 3}, {20, 25, 30, 2}, {35, 40, 45, 1}};
 
         
-        int[][] resultJavaM1M2 = multi.MultiMatrizJava(m1, m2);
+        //int[][] resultJavaM1M2 = multi.MultiMatrizJava(m1, m2);
         int[][] resultNativoM1M2 = multi.multiMatrizNativo(m1, m2);
         
 
-        exibiMatriz(resultJavaM1M2);
+        //exibiMatriz(resultJavaM1M2);
+        System.out.println("========================");
+        System.out.println("Resultado do Produto de M1 e M2:");
         exibiMatriz(resultNativoM1M2);
 
     }
