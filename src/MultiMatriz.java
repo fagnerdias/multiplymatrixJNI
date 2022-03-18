@@ -54,11 +54,9 @@ public class MultiMatriz{
         int[][] m1 = {{10, 20, 30}, {40, 50, 60}, {70, 80, 90}};
         int[][] m2 = {{5, 10, 15, 3}, {20, 25, 30, 2}, {35, 40, 45, 1}};
 
-        
         //int[][] resultJavaM1M2 = multi.MultiMatrizJava(m1, m2);
         int[][] resultNativoM1M2 = multi.multiMatrizNativo(m1, m2);
         
-
         //exibiMatriz(resultJavaM1M2);
         System.out.println("========================");
         System.out.println("Resultado do Produto de M1 e M2:");
